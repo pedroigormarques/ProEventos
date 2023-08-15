@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ProEventos.API.Data;
-using ProEventos.API.Models;
+using ProEventos.Application.Interfaces;
+using ProEventos.Domain;
 
 namespace ProEventos.API.Controllers;
 
@@ -8,40 +8,88 @@ namespace ProEventos.API.Controllers;
 [Route("api/[controller]")]
 public class EventoController : ControllerBase
 {
-    private readonly DataContext _context;
-    public EventoController(DataContext context)
+    private readonly IEventoService _eventoService;
+    public EventoController(IEventoService eventoService)
     {
-        _context = context;
+        _eventoService = eventoService;
     }
 
-    [HttpGet(Name = "GetEvento")]
-    public IEnumerable<Evento> Get()
+    [HttpGet(Name = "GetEventos")]
+    public async Task<ActionResult<Evento[]>> Get()
     {
-        return _context.Eventos;
+        try
+        {
+            return Ok(await _eventoService.GetAllEventosAsync());
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao recuperar eventos. Erro: {e.Message}");
+        }
+    }
+
+    [HttpGet("tema/{tema}", Name = "GetEventosTema")]
+    public async Task<ActionResult<Evento[]>> GetByTema(string tema)
+    {
+        try
+        {
+            return Ok(await _eventoService.GetAllEventosByTemaAsync(tema));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao recuperar eventos. Erro: {e.Message}");
+        }
     }
 
     [HttpGet("{id}", Name = "GetEventoid")]
-    public Evento GetById(int id)
+    public async Task<ActionResult<Evento>> GetById(int id)
     {
-        return _context.Eventos.First(a => a.EventoId == id);
+        try
+        {
+            return Ok(await _eventoService.GetEventoByIdAsync(id));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao recuperar evento. Erro: {e.Message}");
+        }
     }
 
     [HttpPost(Name = "PostEvento")]
-    public Evento Post()
-
+    public async Task<ActionResult<Evento>> Post(Evento model)
     {
-        return _context.Eventos.First();
+        try
+        {
+            return Ok(await _eventoService.AddEvento(model));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao adicionar evento. Erro: {e.Message}");
+        }
+
     }
 
     [HttpPut("{id}", Name = "PutEvento")]
-    public Evento Put(int id)
+    public async Task<ActionResult<Evento>> Put(int id, Evento model)
     {
-        return _context.Eventos.First(a => a.EventoId == id); ;
+        try
+        {
+            return Ok(await _eventoService.UpdateEvento(id, model));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao atualizar evento. Erro: {e.Message}");
+        }
     }
 
     [HttpDelete("{id}", Name = "DeleteEvento")]
-    public Evento Delete(int id)
+    public async Task<ActionResult<bool>> Delete(int id)
     {
-        return _context.Eventos.First(a => a.EventoId == id); ;
+        try
+        {
+            return Ok(await _eventoService.DeleteEvento(id));
+        }
+        catch (Exception e)
+        {
+            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao remover evento. Erro: {e.Message}");
+        }
     }
 }
