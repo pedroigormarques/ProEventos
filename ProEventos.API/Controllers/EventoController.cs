@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
-using ProEventos.Domain;
 
 namespace ProEventos.API.Controllers;
 
@@ -15,7 +15,7 @@ public class EventoController : ControllerBase
     }
 
     [HttpGet(Name = "GetEventos")]
-    public async Task<ActionResult<Evento[]>> Get()
+    public async Task<ActionResult<EventoDto[]>> Get()
     {
         try
         {
@@ -28,7 +28,7 @@ public class EventoController : ControllerBase
     }
 
     [HttpGet("tema/{tema}", Name = "GetEventosTema")]
-    public async Task<ActionResult<Evento[]>> GetByTema(string tema)
+    public async Task<ActionResult<EventoDto[]>> GetByTema(string tema)
     {
         try
         {
@@ -41,7 +41,7 @@ public class EventoController : ControllerBase
     }
 
     [HttpGet("{id}", Name = "GetEventoid")]
-    public async Task<ActionResult<Evento>> GetById(int id)
+    public async Task<ActionResult<EventoDto>> GetById(int id)
     {
         try
         {
@@ -54,7 +54,7 @@ public class EventoController : ControllerBase
     }
 
     [HttpPost(Name = "PostEvento")]
-    public async Task<ActionResult<Evento>> Post(Evento model)
+    public async Task<ActionResult<EventoDto>> Post(EventoDto model)
     {
         try
         {
@@ -68,7 +68,7 @@ public class EventoController : ControllerBase
     }
 
     [HttpPut("{id}", Name = "PutEvento")]
-    public async Task<ActionResult<Evento>> Put(int id, Evento model)
+    public async Task<ActionResult<EventoDto>> Put(int id, EventoDto model)
     {
         try
         {
