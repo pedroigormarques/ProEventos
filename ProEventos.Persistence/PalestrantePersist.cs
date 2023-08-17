@@ -29,9 +29,9 @@ public class PalestrantePersist : IPalestrantePersist
 
     public async Task<Palestrante[]> GetAllPalestrantesByNomeAsync(string nome, bool includeEventos = false)
     {
-        IQueryable<Palestrante> query = _context.Palestrantes.Where(p => p.Nome.ToLower().Contains(nome.ToLower()))
+        IQueryable<Palestrante> query = _context.Palestrantes.Where(p => p.User.PrimeiroNome.ToLower().Contains(nome.ToLower()))
                                                              .Include(p => p.RedesSociais)
-                                                             .OrderBy(p => p.Nome.ToLower());
+                                                             .OrderBy(p => p.User.PrimeiroNome.ToLower());
 
         if (includeEventos)
         {

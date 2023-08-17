@@ -14,10 +14,11 @@ public class EventoPersist : IEventoPersist
         _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
-    public async Task<Evento[]> GetAllEventosAsync(bool includePalestrantes = false)
+    public async Task<Evento[]> GetAllEventosAsync(int userId, bool includePalestrantes = false)
     {
         IQueryable<Evento> query = _context.Eventos.Include(e => e.Lotes)
                                                    .Include(e => e.RedesSociais)
+                                                   .Where(e => e.UserId == userId)
                                                    .OrderBy(e => e.Id);
 
         if (includePalestrantes)
@@ -28,9 +29,9 @@ public class EventoPersist : IEventoPersist
         return await query.ToArrayAsync();
     }
 
-    public async Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
+    public async Task<Evento[]> GetAllEventosByTemaAsync(int userId, string tema, bool includePalestrantes = false)
     {
-        IQueryable<Evento> query = _context.Eventos.Where(e => e.Tema.ToLower().Contains(tema.ToLower()))
+        IQueryable<Evento> query = _context.Eventos.Where(e => e.UserId == userId && e.Tema.ToLower().Contains(tema.ToLower()))
                                                    .Include(e => e.Lotes)
                                                    .Include(e => e.RedesSociais)
                                                    .OrderBy(e => e.Tema.ToLower());
@@ -43,9 +44,9 @@ public class EventoPersist : IEventoPersist
         return await query.ToArrayAsync();
     }
 
-    public async Task<Evento?> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
+    public async Task<Evento?> GetEventoByIdAsync(int userId, int eventoId, bool includePalestrantes = false)
     {
-        IQueryable<Evento> query = _context.Eventos.Where(e => e.Id == eventoId)
+        IQueryable<Evento> query = _context.Eventos.Where(e => e.UserId == userId && e.Id == eventoId)
                                                    .Include(e => e.Lotes)
                                                    .Include(e => e.RedesSociais)
                                                    .OrderBy(e => e.Id);

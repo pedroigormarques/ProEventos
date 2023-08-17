@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.API.Extensions;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
 
 namespace ProEventos.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EventoController : ControllerBase
@@ -19,7 +22,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.GetAllEventosAsync());
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.GetAllEventosAsync(userId));
         }
         catch (Exception e)
         {
@@ -32,7 +36,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.GetAllEventosByTemaAsync(tema));
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.GetAllEventosByTemaAsync(userId, tema));
         }
         catch (Exception e)
         {
@@ -45,7 +50,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.GetEventoByIdAsync(id));
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.GetEventoByIdAsync(userId, id));
         }
         catch (Exception e)
         {
@@ -58,7 +64,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.AddEvento(model));
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.AddEvento(userId, model));
         }
         catch (Exception e)
         {
@@ -72,7 +79,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.UpdateEvento(id, model));
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.UpdateEvento(userId, id, model));
         }
         catch (Exception e)
         {
@@ -85,7 +93,8 @@ public class EventoController : ControllerBase
     {
         try
         {
-            return Ok(await _eventoService.DeleteEvento(id));
+            int userId = User.GetUserId();
+            return Ok(await _eventoService.DeleteEvento(userId, id));
         }
         catch (Exception e)
         {
