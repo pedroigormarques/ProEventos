@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.API.Extensions;
+using ProEventos.API.Models;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.API.Controllers;
 
@@ -18,26 +20,14 @@ public class EventoController : ControllerBase
     }
 
     [HttpGet(Name = "GetEventos")]
-    public async Task<ActionResult<EventoDto[]>> Get()
+    public async Task<ActionResult<PageList<EventoDto>>> Get([FromQuery] PageParams pageParams)
     {
         try
         {
             int userId = User.GetUserId();
-            return Ok(await _eventoService.GetAllEventosAsync(userId));
-        }
-        catch (Exception e)
-        {
-            return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao recuperar eventos. Erro: {e.Message}");
-        }
-    }
-
-    [HttpGet("tema/{tema}", Name = "GetEventosTema")]
-    public async Task<ActionResult<EventoDto[]>> GetByTema(string tema)
-    {
-        try
-        {
-            int userId = User.GetUserId();
-            return Ok(await _eventoService.GetAllEventosByTemaAsync(userId, tema));
+            PageList<EventoDto> pageList = await _eventoService.GetAllEventosAsync(userId, pageParams);
+            Response.AddPagination(pageList.CurrentPage, pageList.PageSize, pageList.TotalCount, pageList.TotalPages);
+            return base.Ok(pageList);
         }
         catch (Exception e)
         {
