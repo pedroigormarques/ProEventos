@@ -83,7 +83,7 @@ public class AccountController : ControllerBase
             if (user == null) return Unauthorized("Usuário inválido");
 
             UserDto userRetorno = await _accountService.UpdateAccount(userDto);
-            return Ok(user);
+            return Ok(userRetorno);
         }
         catch (Exception e)
         {

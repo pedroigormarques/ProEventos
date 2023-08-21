@@ -84,7 +84,7 @@ public class AccountService : IAccountService
             await _userPersist.SaveChangesAsync();
 
             User? userResult = await _userPersist.GetUserByUserNameAsync(user.UserName);
-            if (user == null) throw new Exception("Erro ao carregar dados após atualização");
+            if (userResult == null) throw new Exception("Erro ao carregar dados após atualização");
 
             return _mapper.Map<UserDto>(userResult);
         }

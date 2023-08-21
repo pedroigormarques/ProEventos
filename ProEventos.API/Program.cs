@@ -21,11 +21,15 @@ builder.Services.AddScoped<IEventoPersist, EventoPersist>();
 builder.Services.AddScoped<IGeralPersist, GeralPersist>();
 builder.Services.AddScoped<ILotePersist, LotePersist>();
 builder.Services.AddScoped<IUserPersist, UserPersist>();
+builder.Services.AddScoped<IPalestrantePersist, PalestrantePersist>();
+builder.Services.AddScoped<IRedeSocialPersist, RedeSocialPersist>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<ILoteService, LoteService>();
+builder.Services.AddScoped<IPalestranteService, PalestranteService>();
+builder.Services.AddScoped<IRedeSocialService, RedeSocialService>();
 
 builder.Services.AddDbContext<ProEventosContext>(
     context => context.UseSqlite(builder.Configuration.GetConnectionString("Default"))
@@ -33,11 +37,11 @@ builder.Services.AddDbContext<ProEventosContext>(
 
 builder.Services.AddIdentityCore<User>(opt =>
 {
-    opt.Password.RequireDigit = false;
-    opt.Password.RequireNonAlphanumeric = false;
-    opt.Password.RequireLowercase = false;
-    opt.Password.RequireUppercase = false;
-    opt.Password.RequiredLength = 4;
+  opt.Password.RequireDigit = false;
+  opt.Password.RequireNonAlphanumeric = false;
+  opt.Password.RequireLowercase = false;
+  opt.Password.RequireUppercase = false;
+  opt.Password.RequiredLength = 4;
 })
 .AddRoles<Role>()
 .AddRoleManager<RoleManager<Role>>()
@@ -49,13 +53,13 @@ builder.Services.AddIdentityCore<User>(opt =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
-                    opt.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
+                  opt.TokenValidationParameters = new TokenValidationParameters
+                  {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                  };
                 });
 
 builder.Services.AddControllers()
@@ -68,18 +72,18 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = @"JWT Authorization header using the Bearer scheme.
+  opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+  {
+    Description = @"JWT Authorization header using the Bearer scheme.
                       Enter 'Bearer' [space] and then your token in the text input below.
                       Example: 'Bearer 12345abcdef'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
+    Name = "Authorization",
+    In = ParameterLocation.Header,
+    Type = SecuritySchemeType.ApiKey,
+    Scheme = "Bearer"
+  });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+  opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
       {
         {
           new OpenApiSecurityScheme
@@ -105,8 +109,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
